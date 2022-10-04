@@ -1,0 +1,18 @@
+project.minecraft.runs.each {
+    it.setWorkingDirectory(project.file('run').canonicalPath)
+    it.properties.put('file.encoding', 'UTF-8')
+    it.properties.put('user.language', 'en')
+    it.properties.put('log4j.configurationFile', 'log4j2.xml')
+    if (project.hasMixin && it.getName() != 'data') {
+        it.properties.put('mixin.debug', 'true')
+    }
+    it.mods.maybeCreate("${project.modId}")
+    it.mods.each {
+        if (it.getName() == "${project.modId}" && !it.hasResources()) {
+            it.source(sourceSets.main)
+        }
+    }
+    if (it.getName() == 'data' && it.args.size() == 0) {
+        it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
+    }
+}
