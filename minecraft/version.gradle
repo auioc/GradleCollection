@@ -34,5 +34,6 @@ project.ext.baseVersion = "${minecraft_version}-${project.modVersion}"
 project.ext.fullVersion = "${baseVersion}-${getBuildVersion()}"
 project.version = getEnvAsBoolean('IS_RELEASE') ? baseVersion : fullVersion
 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 logger.lifecycle("Project version: ${project.version}")
 logger.lifecycle("Full version: ${fullVersion}")
