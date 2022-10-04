@@ -1,0 +1,10 @@
+def hasMixinPlugin() {
+    for (plugin in project.plugins) {
+        if (plugin.getClass().getName() == 'org.spongepowered.asm.gradle.plugins.MixinGradlePlugin') {
+            return true
+        }
+    }
+    return false
+}
+
+project.ext.hasMixin = hasMixinPlugin()
