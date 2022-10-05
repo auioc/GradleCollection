@@ -1,4 +1,15 @@
-project.sourceSets.remove(sourceSets.test)
+project.minecraft {
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    runs {
+        client {}
+        server {}
+    }
+}
+
+if (project.hasProperty('datagen_enabled') && "${project.datagen_enabled}".toBoolean()) {
+    project.minecraft { runs { data {} } }
+}
+
 project.minecraft.runs.each {
     it.setWorkingDirectory(project.file('run').canonicalPath)
     it.properties.put('file.encoding', 'UTF-8')
@@ -19,4 +30,10 @@ project.minecraft.runs.each {
             it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
         }
     }
+}
+
+project.sourceSets.remove(sourceSets.test)
+
+project.dependencies {
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
