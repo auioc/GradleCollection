@@ -1,0 +1,9 @@
+if (project.hasProperty('hasMixin') && project.hasMixin) {
+    project.dependencies {
+        annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
+    }
+    mixin {
+        add sourceSets.main, "${project.modId}.mixin-refmap.json"
+        config "${project.modId}.mixin.json"
+    }
+}
