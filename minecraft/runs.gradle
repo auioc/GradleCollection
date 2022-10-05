@@ -1,3 +1,4 @@
+project.sourceSets.remove(sourceSets.test)
 project.minecraft.runs.each {
     it.setWorkingDirectory(project.file('run').canonicalPath)
     it.properties.put('file.encoding', 'UTF-8')
@@ -9,10 +10,13 @@ project.minecraft.runs.each {
     it.mods.maybeCreate("${project.modId}")
     it.mods.each {
         if (it.getName() == "${project.modId}" && !it.hasResources()) {
-            it.source(sourceSets.main)
+            it.source(project.sourceSets.main)
         }
     }
-    if (it.getName() == 'data' && it.args.size() == 0) {
-        it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
+    if (it.getName() == 'data') {
+        project.sourceSets.main.resources { srcDir 'src/generated/resources' }
+        if (it.args.size() == 0) {
+            it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
+        }
     }
 }
