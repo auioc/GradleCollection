@@ -18,6 +18,10 @@ project.minecraft.runs.each {
     if (project.hasProperty('mixinEnabled') && project.mixinEnabled && it.getName() != 'data') {
         it.properties.put('mixin.debug', 'true')
     }
+    if (project.hasProperty('mixin_remap') && "${project.mixin_remap}".toBoolean()) {
+        it.properties.put('mixin.env.remapRefMap', 'true')
+        it.properties.put('mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg")
+    }
     it.mods.maybeCreate("${project.modId}")
     it.mods.each {
         if (it.getName() == "${project.modId}" && !it.hasResources()) {
