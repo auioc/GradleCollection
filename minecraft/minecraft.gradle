@@ -8,6 +8,15 @@ project.minecraft {
 
 if (project.hasProperty('datagen_enabled') && "${project.datagen_enabled}".toBoolean()) {
     project.minecraft { runs { data {} } }
+    if (project.hasProperty('ci') && project.ci) {
+        project.tasks.whenTaskAdded { thisTask ->
+            if (thisTask.name == 'runData') {
+                thisTask.doLast {
+                    delete 'src/generated/resources/.cache'
+                }
+            }
+        }
+    }
 }
 
 project.minecraft.runs.each {
