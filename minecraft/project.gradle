@@ -1,0 +1,5 @@
+project.ext.modId = "${mod_id}"
+project.ext.modName = "${mod_name}"
+project.ext.modVersion= "${mod_version}"
+project.group = "${group}"
+project.archivesBaseName = "${project.modId}"
