@@ -30,6 +30,7 @@ project.minecraft.runs.each {
     }
     if (it.getName() == 'data') {
         project.sourceSets.main.resources { srcDir 'src/generated/resources' }
+        it.setForceExit(false) // https://forums.minecraftforge.net/topic/87940-gradlew-rundata-task-fail/
         if (it.args.size() == 0) {
             it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
         }
