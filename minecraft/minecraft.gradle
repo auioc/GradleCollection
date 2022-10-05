@@ -15,7 +15,7 @@ project.minecraft.runs.each {
     it.properties.put('file.encoding', 'UTF-8')
     it.properties.put('user.language', 'en')
     it.properties.put('log4j.configurationFile', 'log4j2.xml')
-    if (project.hasProperty('hasMixin') && project.hasMixin && it.getName() != 'data') {
+    if (project.hasProperty('mixinEnabled') && project.mixinEnabled && it.getName() != 'data') {
         it.properties.put('mixin.debug', 'true')
     }
     it.mods.maybeCreate("${project.modId}")

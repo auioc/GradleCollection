@@ -8,7 +8,7 @@ def jarManifest = [
         "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
     ]
 jarManifest."${project.modName}-Version" = "${project.archivesBaseName}-${project.fullVersion}"
-if (project.hasProperty('hasMixin') && project.hasMixin) {
+if (project.hasProperty('mixinEnabled') && project.mixinEnabled) {
     jarManifest.TweakClass = 'org.spongepowered.asm.launch.MixinTweaker'
     jarManifest.TweakOrder = 0
     jarManifest.MixinConfigs = "${project.modId}.mixin.json"

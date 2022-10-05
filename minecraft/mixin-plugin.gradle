@@ -1,11 +1,11 @@
 if (project.hasProperty('mixin_version')) {
     apply plugin: 'org.spongepowered.mixin'
-    project.ext.hasMixin = true
+    project.ext.mixinEnabled = true
 } else {
-    project.ext.hasMixin = false
+    project.ext.mixinEnabled = false
 }
 
-def hasMixinPlugin() {
+def isMixinPluginEnabled() {
     for (plugin in project.plugins) {
         if (plugin.getClass().getName() == 'org.spongepowered.asm.gradle.plugins.MixinGradlePlugin') {
             return true
@@ -15,5 +15,5 @@ def hasMixinPlugin() {
 }
 
 ext {
-    hasMixinPlugin = this.&hasMixinPlugin
+    isMixinPluginEnabled = this.&isMixinPluginEnabled
 }

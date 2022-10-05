@@ -1,4 +1,4 @@
-if (project.hasProperty('hasMixin') && project.hasMixin) {
+if (project.hasProperty('mixinEnabled') && project.mixinEnabled) {
     project.dependencies {
         annotationProcessor "org.spongepowered:mixin:${mixin_version}:processor"
     }
