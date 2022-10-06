@@ -29,17 +29,10 @@ task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
     manifest {attributes(jarManifest)}
 }
-task forgelibJar(type: Jar) {
-    from sourceSets.main.output
-    from sourceSets.main.allJava
-    classifier = 'forgelib'
-    manifest {attributes(jarManifest)}
-}
 
 artifacts {
     archives sourcesJar
     archives deobfJar
-    archives forgelibJar
 }
 
-tasks.build.dependsOn('sourcesJar', 'deobfJar', 'forgelibJar')
+tasks.build.dependsOn('sourcesJar', 'deobfJar')
