@@ -24,10 +24,13 @@ def getBuildVersion() {
             return System.getenv('CI_VERSION')
         }
     } else {
-        def sha = getExecOutput(['git', 'rev-parse', '--verify', '--short', 'HEAD'])
-        def dirty = getExecOutput(['git', 'status', '--short']).isEmpty() ? '' : '-dirty'
-        return "dev-rev.${sha}-build.0${dirty}"
+        if (project.file('.git').isDirectory()) {
+            def sha = getExecOutput(['git', 'rev-parse', '--verify', '--short', 'HEAD'])
+            def dirty = getExecOutput(['git', 'status', '--short']).isEmpty() ? '' : '-dirty'
+            return "dev-rev.${sha}-build.0${dirty}"
+        }
     }
+    return 'null'
 }
 
 
