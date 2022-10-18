@@ -48,6 +48,13 @@ project.minecraft.runs.each {
 
 project.sourceSets.remove(sourceSets.test)
 
+project.repositories {
+    maven {
+        url 'https://repo.auioc.com/maven/releases'
+        content { includeGroup "org.auioc.mcmod" }
+    }
+}
+
 project.dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
