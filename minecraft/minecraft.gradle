@@ -29,7 +29,7 @@ project.minecraft.runs.each {
     }
     if (project.hasProperty('mixin_remap') && "${project.mixin_remap}".toBoolean()) {
         it.properties.put('mixin.env.remapRefMap', 'true')
-        it.properties.put('mixin.env.refMapRemappingFile', "${buildDir}/createSrgToMcp/output.srg")
+        it.properties.put('mixin.env.refMapRemappingFile', new File("${project.buildDir}/createSrgToMcp/output.srg").toString())
     }
     it.mods.maybeCreate("${project.modId}")
     it.mods.each {
