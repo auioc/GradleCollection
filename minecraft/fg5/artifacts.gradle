@@ -20,13 +20,13 @@ jar {
 jar.finalizedBy('reobfJar')
 
 task deobfJar(type: Jar) {
-    from sourceSets.main.output
     classifier = 'deobf'
+    from sourceSets.main.output
     manifest {attributes(jarManifest)}
 }
 task sourcesJar(type: Jar, dependsOn: classes) {
-    from sourceSets.main.allSource
     classifier = 'sources'
+    from sourceSets.main.allSource
     manifest {attributes(jarManifest)}
 }
 

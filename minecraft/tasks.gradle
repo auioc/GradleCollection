@@ -19,3 +19,7 @@ task outputProjectFullName() {
         file("tmp/fullname.txt").write("${project.archivesBaseName}-${project.fullVersion}")
     }
 }
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}

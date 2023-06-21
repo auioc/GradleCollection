@@ -1,0 +1,44 @@
+tasks.withType(GenerateModuleMetadata).tap {
+    configureEach {
+        enabled = false // Do not publish dependencies in pom
+    }
+}
+
+def jarManifest = [
+        "Specification-Title": project.modId,
+        "Specification-Vendor": "${vendor}",
+        "Specification-Version": '1',
+        "Implementation-Title": project.modName,
+        "Implementation-Version": project.modVersion,
+        "Implementation-Vendor" : "${vendor}",
+        "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+    ]
+jarManifest."${project.modName}-Version" = "${project.archivesBaseName}-${project.fullVersion}"
+if (project.hasProperty('mixinEnabled') && project.mixinEnabled) {
+    jarManifest.TweakClass = 'org.spongepowered.asm.launch.MixinTweaker'
+    jarManifest.TweakOrder = 0
+    jarManifest.MixinConfigs = "${project.modId}.mixin.json"
+}
+
+jar {
+    manifest {attributes(jarManifest)}
+}
+jar.finalizedBy('reobfJar')
+
+task deobfJar(type: Jar) {
+    archiveClassifier = 'deobf'
+    from sourceSets.main.output
+    manifest {attributes(jarManifest)}
+}
+task sourcesJar(type: Jar, dependsOn: classes) {
+    archiveClassifier = 'sources'
+    from sourceSets.main.allSource
+    manifest {attributes(jarManifest)}
+}
+
+artifacts {
+    archives sourcesJar
+    archives deobfJar
+}
+
+tasks.build.dependsOn('sourcesJar', 'deobfJar')
