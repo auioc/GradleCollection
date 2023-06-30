@@ -1,5 +1,8 @@
 project.minecraft {
     mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    if (project.hasProperty('accesstransformer') && "${project.accesstransformer}".toBoolean()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
     runs {
         client {}
         server {}
