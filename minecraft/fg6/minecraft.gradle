@@ -24,15 +24,18 @@ if (project.hasProperty('datagen_enabled') && "${project.datagen_enabled}".toBoo
 
 project.minecraft.runs.each {
     it.setWorkingDirectory(project.file('run').canonicalPath)
-    it.properties.put('file.encoding', 'UTF-8')
-    it.properties.put('user.language', 'en')
-    it.properties.put('log4j.configurationFile', 'log4j2.xml')
+    it.property('file.encoding', 'UTF-8')
+    it.property('user.language', 'en')
+    for (agentjar in fileTree(include:['javaagent_*.jar'], dir:project.file('run').canonicalPath).collect()) {
+        it.jvmArg("-javaagent:" + agentjar)
+    }
+    it.property('log4j.configurationFile', 'log4j2.xml')
     if (project.hasProperty('mixinEnabled') && project.mixinEnabled && it.getName() != 'data') {
-        it.properties.put('mixin.debug', 'true')
+        it.property('mixin.debug', 'true')
     }
     if (project.hasProperty('mixin_remap') && "${project.mixin_remap}".toBoolean()) {
-        it.properties.put('mixin.env.remapRefMap', 'true')
-        it.properties.put('mixin.env.refMapRemappingFile', new File("${project.buildDir}/createSrgToMcp/output.srg").toString())
+        it.property('mixin.env.remapRefMap', 'true')
+        it.property('mixin.env.refMapRemappingFile', new File("${project.buildDir}/createSrgToMcp/output.srg").toString())
     }
     it.mods.maybeCreate("${project.modId}")
     it.mods.each {
