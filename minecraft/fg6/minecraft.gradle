@@ -62,5 +62,5 @@ project.repositories {
 
 project.dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
-    implementation fileTree(dir: 'libs', include: ['*-deobf.jar', '*-api.jar', '*/*-deobf.jar', '*/*-api.jar'])
+    implementation fileTree(dir: 'libs', include: ['*-deobf.jar', '*-api.jar', '*-forgelib.jar', '*/*-deobf.jar', '*/*-api.jar', '*/*-forgelib.jar'])
 }
