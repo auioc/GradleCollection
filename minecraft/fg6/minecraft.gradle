@@ -22,6 +22,14 @@ if (project.hasProperty('datagen_enabled') && "${project.datagen_enabled}".toBoo
     }
 }
 
+project.ext.gametestEnabled = project.hasProperty('gametest_enabled') && "${project.gametest_enabled}".toBoolean()
+
+if (gametestEnabled) {
+    project.minecraft { runs { gameTestServer {} } }
+} else {
+    project.sourceSets.remove(sourceSets.test)
+}
+
 project.minecraft.runs.each {
     it.setWorkingDirectory(project.file('run').canonicalPath)
     it.property('file.encoding', 'UTF-8')
@@ -41,6 +49,9 @@ project.minecraft.runs.each {
     it.mods.each {
         if (it.getName() == "${project.modId}" && it.getSources().isEmpty()) {
             it.source(project.sourceSets.main)
+            if (gametestEnabled && it.getName() != 'data') {
+                it.source(project.sourceSets.test)
+            }
         }
     }
     if (it.getName() == 'data') {
@@ -49,9 +60,12 @@ project.minecraft.runs.each {
             it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
         }
     }
+    if (it.getName() == 'gameTestServer') {
+        if (!it.getProperties().containsKey('forge.enabledGameTestNamespaces')) {
+            it.property('forge.enabledGameTestNamespaces', "${project.modId}")
+        }
+    }
 }
-
-project.sourceSets.remove(sourceSets.test)
 
 project.repositories {
     maven {
