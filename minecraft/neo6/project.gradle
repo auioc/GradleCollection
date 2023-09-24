@@ -1,0 +1,71 @@
+// Mixin Start =================================================================
+if (project.hasProperty('mixin')) {
+    apply plugin: 'org.spongepowered.mixin'
+    project.ext.mixinEnabled = true
+} else {
+    project.ext.mixinEnabled = false
+}
+
+def isMixinPluginEnabled() {
+    for (plugin in project.plugins) {
+        if (plugin.getClass().getName() == 'org.spongepowered.asm.gradle.plugins.MixinGradlePlugin') {
+            return true
+        }
+    }
+    return false
+}
+
+ext {
+    isMixinPluginEnabled = this.&isMixinPluginEnabled
+}
+// Mixin End ===================================================================
+
+// Project Start ===============================================================
+project.ext.modId = "${mod_id}"
+project.ext.modName = "${mod_name}"
+project.ext.modVersion= "${mod_version}"
+project.group = "${mod_group_id}"
+project.archivesBaseName = "${project.modId}"
+
+def getExecOutput(commands) {
+    def out = new ByteArrayOutputStream()
+    exec {
+        commandLine commands
+        standardOutput out
+    }
+    return out.toString().trim();
+}
+
+def getEnvAsBoolean(name) {
+    return System.getenv(name) && System.getenv(name).toBoolean()
+}
+
+def getBuildVersion() {
+    if (getEnvAsBoolean('CI')) {
+        project.ext.ci = true
+        if (getEnvAsBoolean('GITHUB_ACTIONS')) {
+            def dev =  getEnvAsBoolean('IS_RELEASE') ? '' : 'dev-'
+            def sha =  System.getenv('GITHUB_SHA').substring(0, 7)
+            def buildNumber = System.getenv('GITHUB_RUN_NUMBER')
+            return "${dev}rev.${sha}-build.${buildNumber}"
+        } else {
+            return System.getenv('CI_VERSION')
+        }
+    } else {
+        if (project.file('.git').isDirectory()) {
+            def sha = getExecOutput(['git', 'rev-parse', '--verify', '--short', 'HEAD'])
+            def dirty = getExecOutput(['git', 'status', '--short']).isEmpty() ? '' : '-dirty'
+            return "dev-rev.${sha}-build.0${dirty}"
+        }
+    }
+    return 'null'
+}
+
+project.ext.baseVersion = "${minecraft_version}-${project.modVersion}"
+project.ext.fullVersion = "${baseVersion}-${getBuildVersion()}"
+project.version = getEnvAsBoolean('IS_RELEASE') ? baseVersion : fullVersion
+
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
+logger.lifecycle("Project version: ${project.version}")
+logger.lifecycle("Full version: ${fullVersion}")
+// Project End =================================================================

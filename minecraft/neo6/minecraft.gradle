@@ -1,0 +1,97 @@
+project.minecraft {
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
+    copyIdeResources = true
+    if (project.hasProperty('accesstransformer') && "${project.accesstransformer}".toBoolean()) {
+        accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
+    }
+    runs {
+        client {}
+        server {}
+    }
+}
+
+if (project.hasProperty('datagen') && "${project.datagen}".toBoolean()) {
+    project.minecraft { runs { data {} } }
+    if (project.hasProperty('ci') && project.ci) {
+        project.tasks.whenTaskAdded { thisTask ->
+            if (thisTask.name == 'runData') {
+                thisTask.doLast {
+                    delete 'src/generated/resources/.cache'
+                }
+            }
+        }
+    }
+}
+
+project.ext.gametestEnabled = project.hasProperty('gametest') && "${project.gametest}".toBoolean()
+
+if (gametestEnabled) {
+    project.minecraft { runs { gameTestServer {} } }
+} else {
+    project.sourceSets.remove(sourceSets.test)
+}
+
+project.minecraft.runs.each {
+    it.setWorkingDirectory(project.file('run').canonicalPath)
+    it.property('file.encoding', 'UTF-8')
+    it.property('user.language', 'en')
+    for (agentjar in fileTree(include:['javaagent_*.jar'], dir:project.file('run').canonicalPath).collect()) {
+        it.jvmArg("-javaagent:" + agentjar)
+    }
+    it.property('log4j.configurationFile', 'log4j2.xml')
+    if (project.hasProperty('mixinEnabled') && project.mixinEnabled && it.getName() != 'data') {
+        it.property('mixin.debug', 'true')
+    }
+    it.metaClass.methods.each { m ->
+        if (m.name == 'preLaunchTask') {
+            println 'NeoGralde Patched (PR-6)' // https://github.com/neoforged/NeoGradle/pull/6
+            m.invoke(it, 'gradle: copyVSCodeRuns')
+        }
+    }
+    if (project.hasProperty('mixin_remap') && "${project.mixin_remap}".toBoolean()) {
+        it.property('mixin.env.remapRefMap', 'true')
+        it.property('mixin.env.refMapRemappingFile', new File("${project.buildDir}/createSrgToMcp/output.srg").toString())
+    }
+    it.mods.maybeCreate("${project.modId}")
+    it.mods.each {
+        if (it.getName() == "${project.modId}" && it.getSources().isEmpty()) {
+            it.source(project.sourceSets.main)
+            if (gametestEnabled && it.getName() != 'data') {
+                it.source(project.sourceSets.test)
+            }
+        }
+    }
+    if (it.getName() == 'data') {
+        project.sourceSets.main.resources { srcDir 'src/generated/resources' }
+        if (it.args.size() == 0) {
+            it.args('--mod', "${project.modId}", '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/'))
+        }
+    }
+    if (it.getName() == 'gameTestServer') {
+        if (!it.getProperties().containsKey('forge.enabledGameTestNamespaces')) {
+            it.property('forge.enabledGameTestNamespaces', "${project.modId}")
+        }
+    }
+}
+
+project.repositories {
+    maven {
+        url 'https://repo.auioc.com/maven/releases'
+        content { includeGroup "org.auioc.mcmod" }
+    }
+}
+
+project.dependencies {
+    minecraft "net.neoforged:forge:${minecraft_version}-${neo_version}"
+    implementation fileTree(dir: 'libs', include: ['*-deobf.jar', '*-api.jar', '*-forgelib.jar', '*/*-deobf.jar', '*/*-api.jar', '*/*-forgelib.jar'])
+}
+
+if (project.hasProperty('mixinEnabled') && project.mixinEnabled) {
+    project.dependencies {
+        annotationProcessor "org.spongepowered:mixin:${mixin}:processor"
+    }
+    mixin {
+        add sourceSets.main, "${project.modId}.mixin-refmap.json"
+        config "${project.modId}.mixin.json"
+    }
+}
