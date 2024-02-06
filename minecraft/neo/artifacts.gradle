@@ -18,11 +18,6 @@ jar {
     manifest { attributes(jarManifest) }
 }
 
-task deobfJar(type: Jar) {
-    archiveClassifier = 'deobf'
-    from sourceSets.main.output
-    manifest { attributes(jarManifest) }
-}
 task sourcesJar(type: Jar, dependsOn: classes) {
     archiveClassifier = 'sources'
     from sourceSets.main.allSource
@@ -30,8 +25,7 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 }
 
 artifacts {
-    archives deobfJar
     archives sourcesJar
 }
 
-tasks.build.dependsOn('sourcesJar', 'deobfJar')
+tasks.build.dependsOn('sourcesJar')

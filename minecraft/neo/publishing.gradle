@@ -7,7 +7,6 @@ publishing {
             artifactId project.archivesBaseName
             version project.version
             artifact jar
-            artifact deobfJar
             artifact sourcesJar
         }
     }
