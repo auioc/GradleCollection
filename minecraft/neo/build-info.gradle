@@ -60,6 +60,7 @@ public final class BuildInfo {
 }
 """
 
+file("$buildDir/generated/java").mkdirs()
 sourceSets.main.java { srcDir "$buildDir/generated/java" }
 
 task generatedBuildInfo() {
