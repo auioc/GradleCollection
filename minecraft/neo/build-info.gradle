@@ -61,7 +61,7 @@ compileJava {
         logger.lifecycle("Build info generated")
         logger.info(template)
         file("$buildDir/tmp").mkdirs()
-        file("$buildDir/tmp/artifact-name.txt").write("${project.archivesBaseName}-${buildInfo}")
+        file("$buildDir/tmp/artifact-name.txt").write("${project.archivesBaseName}-${minecraft_version}-${mod_version}-${buildInfo}")
     }
 }
 
