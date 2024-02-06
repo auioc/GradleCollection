@@ -25,7 +25,7 @@ def revision = (() -> {
 })()
 def revisionShort = revision.length() > 8 ? revision.substring(0, 7) : revision
 def buildNumber = isGithubActions ? System.getenv('GITHUB_RUN_NUMBER').toInteger() : 0
-def isDirty = hasGit ? !getExecOutput(['git', 'status', '--short']).isEmpty() : false
+def isDirty = (!isCi && hasGit) ? !getExecOutput(['git', 'status', '--short']).isEmpty() : false
 def isRelease = isGithubActions ? getEnvAsBoolean('IS_RELEASE') : false
 def buildInfo = "rev.${revisionShort}-build.${buildNumber}${isRelease ? '' : '-dev'}${isDirty ? '-dirty' : ''}"
 
