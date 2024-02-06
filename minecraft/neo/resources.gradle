@@ -1,4 +1,5 @@
-sourceSets.main.resources { srcDir 'src/generated/resources' }
+file('src/generated/resources').mkdirs()
+project.sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
