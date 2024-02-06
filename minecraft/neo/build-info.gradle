@@ -39,9 +39,9 @@ project.version = getEnvAsBoolean('IS_RELEASE')
 
 sourceSets.main.java { srcDir "$buildDir/generated/java" }
 
-def package_name = "${mod_group_id}.${mod_id}"
+def packageName = "${mod_group_id}.${mod_id}"
 def template = """
-package ${package_name};
+package ${packageName};
 public final class BuildInfo {
     public static final String MINECRAFT_VERSION = "${minecraft_version}";
     public static final String NEOFORGE_VERSION = "${neo_version}";
@@ -56,8 +56,9 @@ public final class BuildInfo {
 
 compileJava {
     doFirst {
-        file("$buildDir/generated/java/").mkdirs()
-        file("$buildDir/generated/java/BuildInfo.java").write(template)
+        def generatedJavaDir = "$buildDir/generated/java/${packageName.replace(".", "/")}"
+        file(generatedJavaDir).mkdirs()
+        file("${generatedJavaDir}/BuildInfo.java").write(template)
         logger.lifecycle("Build info generated")
         logger.info(template)
         file("$buildDir/tmp").mkdirs()
