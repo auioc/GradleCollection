@@ -1,0 +1,45 @@
+project.repositories {
+    mavenLocal()
+    maven {
+        url 'https://repo.auioc.com/maven/releases'
+        content { includeGroup "org.auioc.mcmod" }
+    }
+}
+
+project.dependencies {
+    implementation "net.neoforged:neoforge:${neo_version}"
+    implementation fileTree(dir: 'libs', include: ['*-deobf.jar', '*-api.jar', '*-forgelib.jar', '*/*-deobf.jar', '*/*-api.jar', '*/*-forgelib.jar'])
+}
+
+project.minecraft {
+    def atFile = 'src/main/resources/META-INF/accesstransformer.cfg'
+    if (file(atFile).exists()) {
+        accessTransformers {
+            file(atFile)
+        }
+    }
+}
+
+
+project.runs {
+    configureEach {
+        modSource project.sourceSets.main
+    }
+
+    client {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
+
+    gameTestServer {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    data {
+        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+    }
+}
