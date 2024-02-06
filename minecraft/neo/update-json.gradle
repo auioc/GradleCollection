@@ -1,0 +1,14 @@
+task generateUpdateJson() {
+    doFirst {
+        def j = [
+            'homepage': "https://github.com/${mod_repository}/releases",
+            'promos'  : [
+                "${minecraft_version}-latest"     : "${mod_version}",
+                "${minecraft_version}-recommended": "${mod_version}",
+            ]
+        ]
+        file("$buildDir/tmp").mkdirs()
+        var file = file("$buildDir/tmp/${minecraft_version}.json")
+        file.write(groovy.json.JsonOutput.toJson(j))
+    }
+}
