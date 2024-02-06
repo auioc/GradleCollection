@@ -1,6 +1,16 @@
 file('src/generated/resources').mkdirs()
 project.sourceSets.main.resources { srcDir 'src/generated/resources' }
 
+if (System.getenv("CI") && System.getenv("CI").toBoolean()) {
+    project.tasks.configureEach { task ->
+        if (task.name == 'runData') {
+            task.doLast {
+                delete 'src/generated/resources/.cache'
+            }
+        }
+    }
+}
+
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
         minecraft_version      : minecraft_version,
