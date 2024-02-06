@@ -38,6 +38,13 @@ project.version = getEnvAsBoolean('IS_RELEASE')
     : "${minecraft_version}-${mod_version}-${buildInfo}"
 
 def packageName = "${mod_group_id}.${mod_id}"
+
+
+def scriptsReversion = getExecOutput(['curl', '--no-progress-meter', "${scripts_url}/reversion"])
+if (scriptsReversion.length() != 40) {
+    throw new GradleException("Invalid scripts reversion")
+}
+
 def template = """
 package ${packageName};
 public final class BuildInfo {
@@ -49,6 +56,7 @@ public final class BuildInfo {
     public static final int BUILD_NUMBER = ${buildNumber};
     public static final boolean IS_RELEASE = ${isRelease};
     public static final boolean IS_DIRTY = ${isDirty};
+    public static final String BUILD_SCRIPTS_REVERSION = "${scriptsReversion}";
 }
 """
 
