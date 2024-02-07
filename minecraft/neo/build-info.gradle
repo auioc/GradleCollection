@@ -48,14 +48,14 @@ if (scriptsReversion.length() != 40) {
 def template = """
 package ${packageName};
 public final class BuildInfo {
-    public static final String MINECRAFT_VERSION = "${minecraft_version}";
-    public static final String NEOFORGE_VERSION = "${neo_version}";
-    public static final String MOD_VERSION = "${mod_version}";
-    public static final boolean IS_CI_BUILD = ${isCi};
+    public static final String VERSION = "${mod_version}";
     public static final String REVERSION = "${revision}";
     public static final int BUILD_NUMBER = ${buildNumber};
+    public static final boolean IS_CI_BUILD = ${isCi};
     public static final boolean IS_RELEASE = ${isRelease};
     public static final boolean IS_DIRTY = ${isDirty};
+    public static final String MINECRAFT_VERSION = "${minecraft_version}";
+    public static final String NEOFORGE_VERSION = "${neo_version}";
     public static final String BUILD_SCRIPTS_REVERSION = "${scriptsReversion}";
 }
 """
