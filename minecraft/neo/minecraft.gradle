@@ -37,6 +37,7 @@ project.runs {
 
     gameTestServer {
         systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        modSource project.sourceSets.test
     }
 
     data {
