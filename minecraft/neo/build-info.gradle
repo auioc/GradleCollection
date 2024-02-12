@@ -63,13 +63,15 @@ public final class BuildInfo {
 file("$buildDir/generated/java").mkdirs()
 sourceSets.main.java { srcDir "$buildDir/generated/java" }
 
-task generatedBuildInfo() {
-    def generatedJavaDir = "$buildDir/generated/java/${packageName.replace(".", "/")}"
-    file(generatedJavaDir).mkdirs()
-    file("${generatedJavaDir}/BuildInfo.java").write(template)
-    logger.info(template)
-    file("$buildDir/tmp").mkdirs()
-    file("$buildDir/tmp/artifact-name.txt").write("${project.archivesBaseName}-${minecraft_version}-${mod_version}-${buildInfo}")
+task generateBuildInfo() {
+    doLast {
+        def generatedJavaDir = "$buildDir/generated/java/${packageName.replace(".", "/")}"
+        file(generatedJavaDir).mkdirs()
+        file("${generatedJavaDir}/BuildInfo.java").write(template)
+        logger.info(template)
+        file("$buildDir/tmp").mkdirs()
+        file("$buildDir/tmp/artifact-name.txt").write("${project.archivesBaseName}-${minecraft_version}-${mod_version}-${buildInfo}")
+    }
 }
 
-compileJava.dependsOn generatedBuildInfo
+compileJava.dependsOn generateBuildInfo
