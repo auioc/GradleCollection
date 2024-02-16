@@ -8,7 +8,7 @@ project.repositories {
 
 project.dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
-    implementation fileTree(dir: 'libs', include: ['*-deobf.jar', '*-api.jar', '*-forgelib.jar', '*/*-deobf.jar', '*/*-api.jar', '*/*-forgelib.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 }
 
 project.minecraft {
