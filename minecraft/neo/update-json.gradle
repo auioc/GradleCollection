@@ -7,8 +7,8 @@ task generateUpdateJson() {
                 "${minecraft_version}-recommended": "${mod_version}",
             ]
         ]
-        file("$buildDir/tmp").mkdirs()
-        var file = file("$buildDir/tmp/${minecraft_version}.json")
+        file("$buildDir/tmp/update").mkdirs()
+        var file = file("$buildDir/tmp/update/${minecraft_version}.json")
         file.write(groovy.json.JsonOutput.toJson(j))
     }
 }
