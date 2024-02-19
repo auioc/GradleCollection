@@ -27,6 +27,9 @@ tasks.withType(ProcessResources).configureEach {
         mod_description        : mod_description,
         mod_repository         : mod_repository,
     ]
+    if (project.hasProperty('resourceReplaceProperties')) {
+        replaceProperties += project.ext.resourceReplaceProperties
+    }
     inputs.properties replaceProperties
 
     filesMatching(['META-INF/mods.toml', 'pack.mcmeta']) {
